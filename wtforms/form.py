@@ -124,9 +124,14 @@ class BaseForm(object):
             kwargs = dict(data, **kwargs)
 
         for name, field, in iteritems(self._fields):
-            if obj is not None and hasattr(obj, name):
-                field.process(formdata, getattr(obj, name))
-            elif name in kwargs:
+            if obj is not None:
+                if field.obj_property and hasattr(obj, field.obj_property):
+                    field.process(formdata, getattr(obj, field.obj_property))
+                    continue
+                elif hasattr(obj, name):
+                    field.process(formdata, getattr(obj, name))
+                    continue
+            if name in kwargs:
                 field.process(formdata, kwargs[name])
             else:
                 field.process(formdata)

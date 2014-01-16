@@ -38,7 +38,7 @@ class Field(object):
             return UnboundField(cls, *args, **kwargs)
 
     def __init__(self, label=None, validators=None, filters=tuple(),
-                 description='', id=None, default=None, widget=None,
+                 description='', id=None, default=None, widget=None, obj_property=None,
                  _form=None, _name=None, _prefix='', _translations=None,
                  _meta=None):
         """
@@ -91,6 +91,7 @@ class Field(object):
         else:
             raise TypeError("Must provide one of _form or _meta")
 
+        self.obj_property = obj_property
         self.default = default
         self.description = description
         self.filters = filters
@@ -320,7 +321,7 @@ class Field(object):
         :note: This is a destructive operation. If `obj.<name>` already exists,
                it will be overridden. Use with caution.
         """
-        setattr(obj, name, self.data)
+        setattr(obj, self.obj_property or name, self.data)
 
 
 class UnboundField(object):
